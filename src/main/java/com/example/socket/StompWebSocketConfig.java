@@ -2,6 +2,7 @@ package com.example.socket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
@@ -21,8 +22,11 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /*어플리케이션 내부에서 사용할 path를 지정할 수 있음*/
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setPathMatcher(new AntPathMatcher(".")); // url을 chat/room/3 -> chat.room.3으로 참조하기 위한 설정
         registry.setApplicationDestinationPrefixes("/pub");
-        registry.enableSimpleBroker("/sub");
+
+        //registry.enableSimpleBroker("/sub");
+        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue");
     }
 
     //    private final WebSocketHandler webSocketHandler;
